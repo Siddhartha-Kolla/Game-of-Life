@@ -30,6 +30,8 @@ cell_d_color = (106, 106, 106)
 # Alive cell color
 cell_a_color = (255, 255, 0)
 
+cycle_runnig = False
+
 # Configuring screen(setting its size by finding out the space rows and cols need)
 screen = pygame.display.set_mode([cols*(cell_size+b_wid),rows*(cell_size+b_wid)])
 
@@ -46,9 +48,16 @@ while running:
 
     # Checking events
     for event in pygame.event.get():
+        # Quit event
         if event.type == pygame.QUIT:
             running = False
-    
+        # Mouse click event
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            MouseX , MouseY = event.pos
+        # Spacebar click event
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                cycle_runnig = True if cycle_runnig == False else False
     # Setting background color
     screen.fill(border_color)
     
