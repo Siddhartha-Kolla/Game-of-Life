@@ -1,11 +1,12 @@
 import pygame as pygame
+import numpy as np
 
 # Initializing pygame
 pygame.init()
 
 # Number of rows and columns
 
-rows , cols = 50 , 50
+rows , cols = 50 , 75
 
 # Size of each cell
 cell_size = 15
@@ -42,8 +43,12 @@ while running:
             running = False
     
     # Setting background color
-    screen.fill()
-
+    screen.fill(border_color)
+    
+    for y in range(rows):
+        for x in range(cols):
+            pygame.draw.rect(screen,cell_d_color,[x*(b_wid+cell_size),y*(b_wid+cell_size),cell_size,cell_size])
+    
     # Updating(Flipping) the whole screen
     pygame.display.flip()
 
