@@ -44,11 +44,6 @@ while running:
     # Setting background color
     screen.fill()
 
-    # Drawing grid
-    for x in range(50):
-        for y in range(50):
-            pygame.draw.rect(screen, (134, 134, 134) ,[x*(750/50),y*(750/50),750/50,750/50],1)
-
     # Updating(Flipping) the whole screen
     pygame.display.flip()
 
