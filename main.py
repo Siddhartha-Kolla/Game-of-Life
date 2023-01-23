@@ -6,8 +6,6 @@ pygame.init()
 screen = pygame.display.set_mode([750,750])
 logo = pygame.image.load("logo.png")
 pygame.display.set_icon(logo)
-clock = pygame.time.Clock()
-fps= 60
 
 
 running = True
@@ -24,6 +22,4 @@ while running:
             pygame.draw.rect(screen, (134, 134, 134) ,[x*(750/50),y*(750/50),750/50,750/50],1)
 
     pygame.display.flip()
-    clock.tick(fps)
-
 pygame.quit()
