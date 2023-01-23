@@ -3,8 +3,27 @@ import pygame as pygame
 # Initializing pygame
 pygame.init()
 
-# Configuring screen
-screen = pygame.display.set_mode([750,750])
+# Number of rows and columns
+
+rows , cols = 50 , 50
+
+# Size of each cell
+cell_size = 15
+
+#Border width
+b_wid = 2
+
+# Border color
+border_color = (134,134,134)
+
+# Dead cell color
+cell_d_color = (106, 106, 106)
+
+# Alive cell color
+cell_a_color = (255, 255, 0)
+
+# Configuring screen(setting its size by finding out the space rows and cols need)
+screen = pygame.display.set_mode([cols*(cell_size+b_wid),rows*(cell_size+b_wid)])
 
 # Adding a title
 pygame.display.set_caption("Conways Game of Life")
@@ -23,7 +42,7 @@ while running:
             running = False
     
     # Setting background color
-    screen.fill((106, 106, 106))
+    screen.fill()
 
     # Drawing grid
     for x in range(50):
