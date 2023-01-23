@@ -1,21 +1,19 @@
-import pygame as pygame
 import numpy as np
+import pygame as pygame
 
 # Initializing pygame
 pygame.init()
 
 # Number of rows and columns
+rows , cols = 50,50
 
-rows , cols = 50 , 75
+# Creating a numpy array to check whether cell is alive or not
+cell_status_list = np.zeros((rows,cols),np.int8)
+print(cell_status_list)
 
-cell_status_list = np.full((rows,cols),False)
-# print(cell_status_list)
-        
-cell_neib_list = np.full((rows,cols), 0)
-        
-game_list = np.array([cell_status_list, cell_neib_list])
-
-print(game_list[0])
+# Creating a numpy array for the cell status after checking the neighbors
+future_status_list = np.zeros((rows,cols),np.int8)
+print(future_status_list)
 
 # Size of each cell
 cell_size = 15
