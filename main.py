@@ -8,6 +8,15 @@ pygame.init()
 
 rows , cols = 50 , 75
 
+cell_status_list = np.full((rows,cols),False)
+# print(cell_status_list)
+        
+cell_neib_list = np.full((rows,cols), 0)
+        
+game_list = np.array([cell_status_list, cell_neib_list])
+
+print(game_list[0])
+
 # Size of each cell
 cell_size = 15
 
