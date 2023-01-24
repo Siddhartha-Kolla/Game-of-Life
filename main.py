@@ -54,6 +54,9 @@ while running:
         # Mouse click event
         if event.type == pygame.MOUSEBUTTONDOWN:
             MouseX , MouseY = event.pos
+            status_temp = cell_status_list[MouseY//(cell_size+b_wid) , MouseX//(cell_size+b_wid)]
+            cell_status_list[MouseY//(cell_size+b_wid) , MouseX//(cell_size+b_wid)] = 1 if status_temp == 0 else 0
+
         # Spacebar click event
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
@@ -63,10 +66,10 @@ while running:
     
     for y in range(rows):
         for x in range(cols):
-            pygame.draw.rect(screen,cell_d_color,[x*(b_wid+cell_size),y*(b_wid+cell_size),cell_size,cell_size])
+            pygame.draw.rect(screen,cell_d_color if cell_status_list[y , x] == 0 else cell_a_color,[x*(b_wid+cell_size),y*(b_wid+cell_size),cell_size,cell_size])
     
     # Updating(Flipping) the whole screen
     pygame.display.flip()
-
+# cell_status_list[MouseY/(cell_size+b_wid) , MouseX/(cell_size+b_wid)]
 # Exit the program
 pygame.quit()
