@@ -24,10 +24,10 @@ future_status_list = np.zeros((rows,cols),np.int8)
 speed = 20
 
 # Size of each cell
-cell_size = 15
+cell_size = 14
 
 #Border width
-b_wid = 2
+b_wid = 1
 
 # Border color
 border_color = (134,134,134)
@@ -38,11 +38,19 @@ cell_d_color = (106, 106, 106)
 # Alive cell color
 cell_a_color = (255, 255, 0)
 
+# Text display screen color
+t_s_bg = (74, 182, 212)
+
+# Text color
+t_color = (29, 133, 34)
+
 # Boolean that indicates whether to continue life cycle or not
 cycle_runnig = False
 
+extra_space = 200
+
 # Configuring screen(setting its size by finding out the space rows and cols need)
-screen = pygame.display.set_mode([cols*(cell_size+b_wid),rows*(cell_size+b_wid)])
+screen = pygame.display.set_mode([cols*(cell_size+b_wid)+extra_space,rows*(cell_size+b_wid)])
 
 # Adding a title
 pygame.display.set_caption("Conways Game of Life")
@@ -83,6 +91,8 @@ def check_neighbours():
     # Returning the updated list
     return future_status_list
 
+def display_text():
+    pygame.draw.rect(screen,t_s_bg,[cols*(cell_size+b_wid),0,extra_space,rows*(cell_size+b_wid)])
 
 # Main game loop
 while running:
@@ -123,6 +133,8 @@ while running:
     # Life cycle
     if cycle_runnig:
         cell_status_list = np.array(check_neighbours())
+    
+    display_text()
 
 
     # Drawing the rectangles
