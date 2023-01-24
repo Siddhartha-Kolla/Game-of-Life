@@ -6,11 +6,10 @@ import random
 pygame.init()
 
 # Number of rows and columns
-rows , cols = 100,100
+rows , cols = 50,75
 
 # Creating a numpy array to check whether cell is alive or not
 global cell_status_list
-# cell_status_list = np.zeros((rows,cols),np.int8)
 cell_status_list = []
 for i in range(rows):
     cell_status_list.append([random.getrandbits(1) for i in range(cols)])
@@ -55,22 +54,22 @@ clock = pygame.time.Clock()
 running = True
 
 def check_neighbours():
+    for row , col in np.ndindex(cell_status_list.shape):
+        neib_temp = 0
+        neib_temp = np.sum(cell_status_list[row-1:row+2 , col-1:col+2]) - cell_status_list[row,col]
+    
+                                    
+        if cell_status_list[row][col] == 1:
+            if neib_temp == 3 or neib_temp == 2:
+                future_status_list[row][col] = 1
+            else:
+                future_status_list[row][col] = 0
 
-    for i in range(rows):
-        for j in range(cols):
-            neib_temp = 0
-            for x in range(-1,2):
-                if not (x+i < 0 or x+i >= rows):
-                    for y in range(-1,2):
-                        if not (x == 0 and y == 0):
-                            if not (y+j < 0 or y+j >= cols):
-                                if cell_status_list[x+i][y+j] == 1:
-                                    neib_temp = neib_temp + 1
-            if cell_status_list[i][j] == 1:
-                future_status_list[i][j] = 1 if neib_temp == 3 or neib_temp == 2 else 0
-
-            elif cell_status_list[i][j] == 0:
-                future_status_list[i][j] = 1 if neib_temp == 3 else 0
+        elif cell_status_list[row][col] == 0:
+            if neib_temp == 3:
+                future_status_list[row][col] = 1
+            else:
+                future_status_list[row][col] = 0
     
     return future_status_list
 
@@ -89,14 +88,19 @@ while running:
                     cycle_runnig = True
                 elif cycle_runnig == True:
                     cycle_runnig = False
-
-
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            MouseX,MouseY = event.pos
+            status_temp = cell_status_list[MouseY//(cell_size+b_wid) , MouseX//(cell_size+b_wid)]
+            if status_temp == 0:
+                cell_status_list[MouseY//(cell_size+b_wid), MouseX//(cell_size+b_wid)] = 1
+            else:
+                cell_status_list[MouseY//(cell_size+b_wid), MouseX//(cell_size+b_wid)] = 0
 
     # Setting background color
     screen.fill(border_color)
 
     if cycle_runnig:
-        cell_status_list = check_neighbours()
+        cell_status_list = np.array(check_neighbours())
 
 
 
@@ -106,7 +110,7 @@ while running:
     
     # Updating(Flipping) the whole screen
     pygame.display.flip()
-    clock.tick(50)
+    clock.tick(20)
 # Exit the program
 
 
