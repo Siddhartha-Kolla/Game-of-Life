@@ -20,6 +20,9 @@ cell_status_list = np.array(cell_status_list)
 global future_status_list
 future_status_list = np.zeros((rows,cols),np.int8)
 
+# Speed of the cycle
+speed = 20
+
 # Size of each cell
 cell_size = 15
 
@@ -98,6 +101,10 @@ while running:
                     cycle_runnig = True
                 elif cycle_runnig == True:
                     cycle_runnig = False
+            if event.key == pygame.K_UP:
+                speed = min(25,speed+1)
+            if event.key == pygame.K_DOWN:
+                speed = max(5,speed-1)
         # Mouse button events
         if event.type == pygame.MOUSEBUTTONDOWN:
             # Mouse pointer position
@@ -127,7 +134,7 @@ while running:
     pygame.display.flip()
 
     # Clock tick argument(Useful for making life cycle slower or faster)
-    clock.tick(20)
+    clock.tick(speed)
 
 
 # Exit the program
