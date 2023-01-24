@@ -45,12 +45,19 @@ t_s_bg = (74, 182, 212)
 t_color = (29, 133, 34)
 
 # Boolean that indicates whether to continue life cycle or not
-cycle_runnig = False
+cycle_running = False
+
+# Count of life cycles
+cycle_count = 0
 
 extra_space = 200
 
+normal_width = cols*(cell_size+b_wid)
+
+normal_height = rows*(cell_size+b_wid)
+
 # Configuring screen(setting its size by finding out the space rows and cols need)
-screen = pygame.display.set_mode([cols*(cell_size+b_wid)+extra_space,rows*(cell_size+b_wid)])
+screen = pygame.display.set_mode([normal_width+extra_space,normal_height])
 
 # Adding a title
 pygame.display.set_caption("Conways Game of Life")
@@ -61,6 +68,9 @@ pygame.display.set_icon(icon)
 
 # Adding clock
 clock = pygame.time.Clock()
+
+# Setting the font
+font = pygame.font.Font("freesansbold.ttf", 20)
 
 # Game Loop
 running = True
@@ -92,8 +102,24 @@ def check_neighbours():
     return future_status_list
 
 def display_text():
-    pygame.draw.rect(screen,t_s_bg,[cols*(cell_size+b_wid),0,extra_space,rows*(cell_size+b_wid)])
+    pygame.draw.rect(screen,t_s_bg,[normal_width,0,extra_space,normal_height])
+    speed_text = font.render(str(speed), True, t_color)
+    speedText_rect = speed_text.get_rect()
+    speedText_rect.center = (normal_width+extra_space//2,normal_height//4)
 
+    screen.blit(speed_text,speedText_rect)
+
+    speed_text = font.render(str(speed), True, t_color)
+    speedText_rect = speed_text.get_rect()
+    speedText_rect.center = (normal_width+extra_space//2,normal_height//4)
+
+    screen.blit(speed_text,speedText_rect)
+
+    lifeCount_text = font.render(str(cycle_count), True, t_color)
+    lifeCountText_rect = lifeCount_text.get_rect()
+    lifeCountText_rect.center = (normal_width+extra_space//2,2*normal_height//4)
+
+    screen.blit(lifeCount_text,lifeCountText_rect)
 # Main game loop
 while running:
 
@@ -107,10 +133,10 @@ while running:
         if event.type == pygame.KEYDOWN:
             # Space key event(activates the life cycle)
             if event.key == pygame.K_SPACE:
-                if cycle_runnig == False:
-                    cycle_runnig = True
-                elif cycle_runnig == True:
-                    cycle_runnig = False
+                if cycle_running == False:
+                    cycle_running = True
+                elif cycle_running == True:
+                    cycle_running = False
             if event.key == pygame.K_UP:
                 speed = min(25,speed+1)
             if event.key == pygame.K_DOWN:
@@ -131,7 +157,8 @@ while running:
     screen.fill(border_color)
 
     # Life cycle
-    if cycle_runnig:
+    if cycle_running:
+        cycle_count += 1
         cell_status_list = np.array(check_neighbours())
     
     display_text()
