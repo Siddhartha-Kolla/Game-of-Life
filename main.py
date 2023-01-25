@@ -215,8 +215,8 @@ while running:
     # Updating(Flipping) the whole screen
     pygame.display.flip()
 
-    clock.tick(speed)
     # Clock tick argument(Useful for making life cycle slower or faster)
+    clock.tick(speed)
 
 # Exit the program
 pygame.quit()
