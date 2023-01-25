@@ -5,11 +5,15 @@ Date: 26-01-2023
 My GitHub: https://github.com/Siddhartha-Kolla
 ##################################################################################################
 
-Configurations(Key Shortcuts):
+Controls:
 Up Arrow: Speed Up the life cycle
 Down Arrow: Slow Down the life cycle
+Space Bar: Pause or Resume the life cycle
 
 Numbers 1 to 4: Change the color theme of the life canvas
+
+Left Mouse Button: Add cell to the life canvas
+Right Mouse Button: Remove cell from the life canvas
 
 ##################################################################################################
 """
