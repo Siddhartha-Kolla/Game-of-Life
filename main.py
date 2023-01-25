@@ -1,3 +1,22 @@
+"""
+##################################################################################################
+Author: Siddhartha Kolla
+Date: 26-01-2023
+My GitHub: https://github.com/Siddhartha-Kolla
+##################################################################################################
+
+Configurations(Key Shortcuts):
+Up Arrow: Speed Up the life cycle
+Down Arrow: Slow Down the life cycle
+
+Numbers 1 to 4: Change the color theme of the life canvas
+
+##################################################################################################
+"""
+
+
+
+
 import numpy as np
 import pygame as pygame
 import random
@@ -21,7 +40,7 @@ global future_status_list
 future_status_list = np.zeros((rows,cols),np.int8)
 
 # Speed of the cycle
-speed = 20
+speed = 10
 
 # Size of each cell
 cell_size = 14
@@ -30,13 +49,21 @@ cell_size = 14
 b_wid = 1
 
 # Border color
-border_color = (134,134,134)
+border_color = (135,135,135)
 
 # Dead cell color
-cell_d_color = (106, 106, 106)
+cell_d_color = (106,106,106)
 
 # Alive cell color
-cell_a_color = (255, 255, 0)
+cell_a_color = (255,255,0)
+'''Color Combinations
+1. (255,255,0) - (106,106,106)
+2. (210,10,10) - (0,0,0)
+3. (245,245,245) - (0,0,0)
+4. (0,0,0) - (245,245,245)
+5. (40,190,60) - (180,40,190)
+
+'''
 
 # Text display screen color
 t_s_bg = (74, 182, 212)
@@ -74,7 +101,6 @@ font = pygame.font.Font("freesansbold.ttf", 20)
 
 # Game Loop
 running = True
-
 
 # Function to check the neighbors of each cell and update game list
 def check_neighbours():
@@ -133,25 +159,38 @@ while running:
         if event.type == pygame.KEYDOWN:
             # Space key event(activates the life cycle)
             if event.key == pygame.K_SPACE:
-                if cycle_running == False:
-                    cycle_running = True
-                elif cycle_running == True:
-                    cycle_running = False
+                cycle_running = not cycle_running
+            # Speeding up the life cycle
             if event.key == pygame.K_UP:
                 speed = min(25,speed+1)
+            # Slowing down the life cycel
             if event.key == pygame.K_DOWN:
                 speed = max(5,speed-1)
-        # Mouse button events
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            # Mouse pointer position
-            MouseX,MouseY = event.pos
-            # Pulling out the status of the clicked cell
-            status_temp = cell_status_list[MouseY//(cell_size+b_wid) , MouseX//(cell_size+b_wid)]
+            if event.key == pygame.K_1:
+                cell_a_color = (255,255,0)
+                cell_d_color = (106,106,106)
+            if event.key == pygame.K_2:
+                cell_a_color = (0,0,0)
+                cell_d_color = (245,245,245)
+            if event.key == pygame.K_3:
+                cell_a_color = (210,10,10)
+                cell_d_color = (0,0,0)
+            if event.key == pygame.K_4:
+                cell_a_color = (180,40,190)
+                cell_d_color = (40,190,60)
+    # Mouse button events
+    if pygame.mouse.get_pressed()[0]:
+        # Mouse pointer position
+        MouseX,MouseY = pygame.mouse.get_pos()
+
+        if not(MouseX > normal_width):
             # Setting new status of the clicked cell
-            if status_temp == 0:
-                cell_status_list[MouseY//(cell_size+b_wid), MouseX//(cell_size+b_wid)] = 1
-            else:
-                cell_status_list[MouseY//(cell_size+b_wid), MouseX//(cell_size+b_wid)] = 0
+            cell_status_list[MouseY//(cell_size+b_wid), MouseX//(cell_size+b_wid)] = 1
+            pygame.display.update()
+    if pygame.mouse.get_pressed()[2]:
+        MouseX,MouseY = pygame.mouse.get_pos()
+        if not(MouseX > normal_width):
+            cell_status_list[MouseY//(cell_size+b_wid), MouseX//(cell_size+b_wid)] = 0
 
     # Setting background color
     screen.fill(border_color)
@@ -172,9 +211,8 @@ while running:
     # Updating(Flipping) the whole screen
     pygame.display.flip()
 
-    # Clock tick argument(Useful for making life cycle slower or faster)
     clock.tick(speed)
-
+    # Clock tick argument(Useful for making life cycle slower or faster)
 
 # Exit the program
 pygame.quit()
