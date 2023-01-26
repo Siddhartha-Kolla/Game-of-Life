@@ -24,87 +24,123 @@ Right Mouse Button: Remove cell from the life canvas
 import numpy as np
 import pygame as pygame
 import random
-
-# Initializing pygame
-pygame.init()
-
-# Number of rows and columns
-rows , cols = 50,75
-
-# Creating a numpy array to check whether cell is alive or not(currently randomly generated)
-global cell_status_list
-cell_status_list = []
-for i in range(rows):
-    cell_status_list.append([random.getrandbits(1) for i in range(cols)])
-cell_status_list = np.array(cell_status_list)
+from tkinter import *
+import tkinter.ttk as ttk
+from PIL import ImageTk, Image
+from tkinter_api import configure_window
 
 
-# Creating a numpy array for the cell status after checking the neighbors
-global future_status_list
-future_status_list = np.zeros((rows,cols),np.int8)
+def initialize():
 
-# Speed of the cycle
-speed = 10
+    # Initializing pygame
+    pygame.init()
+    # Initializing font for the pygame
+    pygame.font.init()
 
-# Size of each cell
-cell_size = 14
+    list_configure = configure_window()
 
-#Border width
-b_wid = 1
+    global extra_space
+    extra_space = 200
 
-# Border color
-border_color = (135,135,135)
+    # Size of each cell
+    global cell_size
+    cell_size = list_configure["size"]
 
-# Dead cell color
-cell_d_color = (106,106,106)
+    # Number of rows and columns
+    global rows , cols
+    rows , cols = list_configure["row"], list_configure["col"]
+    # Creating a numpy array to check whether cell is alive or not(currently randomly generated)
+    global cell_status_list
+    cell_status_list = list_configure["r_or_d"]
+    if cell_status_list == "Random":
+        cell_status_list = []
+        for i in range(rows):
+            cell_status_list.append([random.getrandbits(1) for i in range(cols)])
+        cell_status_list = np.array(cell_status_list)
+    else:
+        cell_status_list = np.zeros((rows,cols),np.int8)
 
-# Alive cell color
-cell_a_color = (255,255,0)
-'''Color Combinations
-1. (255,255,0) - (106,106,106)
-2. (210,10,10) - (0,0,0)
-3. (245,245,245) - (0,0,0)
-4. (0,0,0) - (245,245,245)
-5. (40,190,60) - (180,40,190)
 
-'''
+    # Creating a numpy array for the cell status after checking the neighbors
+    global future_status_list
+    future_status_list = np.zeros((rows,cols),np.int8)
 
-# Text display screen color
-t_s_bg = (74, 182, 212)
+    # Speed of the cycle
+    global speed
+    speed = list_configure["speed"]
 
-# Text color
-t_color = (29, 133, 34)
+    #Border width
+    global b_wid
+    b_wid = 1
 
-# Boolean that indicates whether to continue life cycle or not
-cycle_running = False
+    # Border color
+    global border_color
+    border_color = (135,135,135)
 
-# Count of life cycles
-cycle_count = 0
+    list_d = {"Grey - Yellow":(106,106,106),"Black - White":(0,0,0),"Black- Red":(0,0,0),"Green - Purple":(180,40,190)}
 
-extra_space = 200
+    # Dead cell color
+    global cell_d_color
+    cell_d_color = list_d[list_configure["color_theme"]]
 
-normal_width = cols*(cell_size+b_wid)
+    list_a = {"Grey - Yellow":(255,255,0),"Black - White":(210,10,10),"Black- Red":(245,245,245),"Green - Purple":(40,190,60)}
+    # Alive cell color
+    global cell_a_color
+    cell_a_color = list_a[list_configure["color_theme"]]
+    '''Color Combinations
+    1. (255,255,0) - (106,106,106)
+    2. (210,10,10) - (0,0,0)
+    3. (245,245,245) - (0,0,0)
+    4. (0,0,0) - (245,245,245)
+    5. (40,190,60) - (180,40,190)
 
-normal_height = rows*(cell_size+b_wid)
+    '''
 
-# Configuring screen(setting its size by finding out the space rows and cols need)
-screen = pygame.display.set_mode([normal_width+extra_space,normal_height])
+    # Text display screen color
+    global t_s_bg
+    t_s_bg = (74, 182, 212)
 
-# Adding a title
-pygame.display.set_caption("Conways Game of Life")
+    # Text color
+    global t_color
+    t_color = (29, 133, 34)
 
-# Adding an icon to the screen
-icon = pygame.image.load("logo.png")
-pygame.display.set_icon(icon)
+    # Boolean that indicates whether to continue life cycle or not
+    global cycle_running
+    cycle_running = False
 
-# Adding clock
-clock = pygame.time.Clock()
+    # Count of life cycles
+    global cycle_count
+    cycle_count = 0
 
-# Setting the font
-font = pygame.font.Font("freesansbold.ttf", 20)
+    global normal_width
+    normal_width = cols*(cell_size+b_wid)
 
-# Game Loop
-running = True
+    global normal_height
+    normal_height = rows*(cell_size+b_wid)
+
+    # Configuring screen(setting its size by finding out the space rows and cols need)
+    global screen
+    screen = pygame.display.set_mode([normal_width+extra_space,normal_height])
+
+    # Adding clock
+    global clock
+    clock = pygame.time.Clock()
+
+    # Adding a title
+    pygame.display.set_caption("Conways Game of Life")
+
+    # Adding an icon to the screen
+    global icon
+    icon = pygame.image.load("logo.png")
+    pygame.display.set_icon(icon)
+
+    # Setting the font
+    global font
+    font = pygame.font.Font("freesansbold.ttf", 20)
+
+    # Game Loop
+    global running
+    running = True
 
 # Function to check the neighbors of each cell and update game list
 def check_neighbours():
@@ -150,6 +186,9 @@ def display_text():
     lifeCountText_rect.center = (normal_width+extra_space//2,2*normal_height//4)
 
     screen.blit(lifeCount_text,lifeCountText_rect)
+
+initialize()
+
 # Main game loop
 while running:
 
@@ -182,6 +221,9 @@ while running:
             if event.key == pygame.K_4:
                 cell_a_color = (180,40,190)
                 cell_d_color = (40,190,60)
+            if event.key == pygame.K_q:
+                pygame.quit()
+                initialize()
     # Mouse button events
     if pygame.mouse.get_pressed()[0]:
         # Mouse pointer position
