@@ -34,13 +34,24 @@ size_lbl.pack()
 
 
 size_spinbox = ttk.Spinbox(root, from_=12, to= 20)
+size_spinbox.set(15)
 size_spinbox.pack()
 
 row_lbl = Label(root, text="Rows: ")
 row_lbl.pack()
 
 
-row_spinbox = ttk.Spinbox(root, from_=12, to= 20)
+def change_size(event):
+    screen_width = int(root.winfo_screenwidth())
+    screen_height = int(root.winfo_screenheight())
+    width = int(size_spinbox.get())
+    row_spinbox.config(from_=10, to=screen_height//width-10)
+    col_spinbox.config(from_=10, to=(screen_width-200)//width-5)
+
+row_spinbox = ttk.Spinbox(root, from_=10, to= 50)
+row_spinbox.set(25)
+row_spinbox.bind("<Button-1>", change_size)
+
 row_spinbox.pack()
 
 
@@ -48,14 +59,17 @@ col_lbl = Label(root, text="Columns: ")
 col_lbl.pack()
 
 
-col_spinbox = ttk.Spinbox(root, from_=12, to= 20)
+col_spinbox = ttk.Spinbox(root, from_=10, to= 50)
+col_spinbox.set(25)
 col_spinbox.pack()
+col_spinbox.bind("<Button-1>", change_size)
 
 
 color_theme_lbl = Label(root, text="Color Theme: ")
 color_theme_lbl.pack()
 
 col_th_cbbox = ttk.Combobox(root, state="readonly", values=["Grey - Yellow","Black - White","Black- Red","Green - Purple"])
+col_th_cbbox.set("Grey - Yellow")
 col_th_cbbox.pack()
 
 
@@ -63,11 +77,28 @@ speed_lbl = Label(root, text="Speed: ")
 speed_lbl.pack()
 
 speed_spinbox = ttk.Spinbox(root, from_=5, to= 25)
+speed_spinbox.set(20)
 speed_spinbox.pack()
 
+def submit():
+    r_or_d = dec_var.get()
+    size = int(size_spinbox.get())
+    row = int(row_spinbox.get())
+    col = int(col_spinbox.get())
+    color_theme = col_th_cbbox.get()
+    speed = int(speed_spinbox.get())	
+    if r_or_d == 1:
+        r_or_d = "Random"
+    elif r_or_d == 2:
+        r_or_d = "Draw"
+    
 
-sub_btn = ttk.Button(root, text="Submit")
-sub_btn.pack()
+sub_btn = ttk.Button(root, text="Submit", command=submit)
+sub_btn.pack(padx=20, pady=10)
+
+err_lbl = Label(root, text="")
+err_lbl.pack(padx=20, pady=10)
+
 
 
 root.mainloop()
