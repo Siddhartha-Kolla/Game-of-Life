@@ -91,6 +91,23 @@ def submit():
         r_or_d = "Random"
     elif r_or_d == 2:
         r_or_d = "Draw"
+    if size < 12 or size > 20:
+        err_lbl.config(text="Size must be between 12 and 20")
+        return None
+    screen_width = int(root.winfo_screenwidth())
+    screen_height = int(root.winfo_screenheight())
+    width = int(size_spinbox.get())
+    if row < 10 or row > screen_height//width-10:
+        err_lbl.config(text="Row must be between 10 and " + str(screen_height//width-10))
+        return None
+    if col < 10 or col > (screen_width-200)//width:
+        err_lbl.config(text="Column must be between 10 and " + str((screen_width-200)//width))
+        return None
+    if speed < 5 or speed > 25:
+        err_lbl.config(text="Speed must be between 5 and 25")
+        return None
+    list_of_configurations = [r_or_d, size, row, col, color_theme, speed]
+    return list_of_configurations
     
 
 sub_btn = ttk.Button(root, text="Submit", command=submit)
