@@ -9,6 +9,9 @@ def configure_window():
     root.geometry("750x500")
     root.title("Conway's Game of Life")
 
+    photo = PhotoImage(file = "logo.png")
+    root.iconphoto(False, photo)
+
     wel_lbl = Label(root, text="Welcome to Conway's Game of Life")
     wel_lbl.config(font=("Helvetica", 30))
 
