@@ -55,7 +55,7 @@ col_spinbox.pack()
 color_theme_lbl = Label(root, text="Color Theme: ")
 color_theme_lbl.pack()
 
-col_th_cbbox = ttk.Combobox(root, state="readonly")
+col_th_cbbox = ttk.Combobox(root, state="readonly", values=["Grey - Yellow","Black - White","Black- Red","Green - Purple"])
 col_th_cbbox.pack()
 
 
