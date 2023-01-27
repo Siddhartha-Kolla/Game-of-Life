@@ -165,7 +165,8 @@ def check_neighbours():
                 future_status_list[row][col] = 0
     
     # Returning the updated list
-    return future_status_list
+    return future_status_list#
+    
 
 def display_text():
     pygame.draw.rect(screen,t_s_bg,[normal_width,0,extra_space,normal_height])
