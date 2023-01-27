@@ -23,7 +23,7 @@ def configure_window():
     ran_or_dr_frame.pack()
 
     dec_var = IntVar()
-    dec_var.set(1)
+    dec_var.set(2)
 
 
     ran_radio_btn = ttk.Radiobutton(ran_or_dr_frame, text="Random Positioning",variable= dec_var, value=1)
