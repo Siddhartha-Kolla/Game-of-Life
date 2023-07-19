@@ -30,6 +30,12 @@ from PIL import ImageTk, Image
 from tkinter_api import configure_window
 
 
+def random_list(rows,cols):
+    cell_status_list = []
+    for i in range(rows):
+        cell_status_list.append([random.getrandbits(1) for i in range(cols)])
+    return np.array(cell_status_list)
+
 def initialize():
 
     # Initializing pygame
@@ -37,26 +43,27 @@ def initialize():
     # Initializing font for the pygame
     pygame.font.init()
 
-    list_configure = configure_window()
-
-    global extra_space
-    extra_space = 200
+    # Configuring screen(setting its size by finding out the space rows and cols need)
+    global screen
+    screen = pygame.display.set_mode([0,0],pygame.FULLSCREEN)
 
     # Size of each cell
     global cell_size
-    cell_size = list_configure["size"]
+    cell_size = 10
+
+    # Extracting the display size
+    dis_siz_x , dis_siz_y = screen.get_size()
+    print(dis_siz_x,dis_siz_y)
 
     # Number of rows and columns
     global rows , cols
-    rows , cols = list_configure["row"], list_configure["col"]
+    rows , cols = dis_siz_y // cell_size, dis_siz_x // cell_size
+
     # Creating a numpy array to check whether cell is alive or not(currently randomly generated)
     global cell_status_list
-    cell_status_list = list_configure["r_or_d"]
+    cell_status_list = "Draw"
     if cell_status_list == "Random":
-        cell_status_list = []
-        for i in range(rows):
-            cell_status_list.append([random.getrandbits(1) for i in range(cols)])
-        cell_status_list = np.array(cell_status_list)
+        cell_status_list = random_list(rows,cols)
     else:
         cell_status_list = np.zeros((rows,cols),np.int8)
 
@@ -67,11 +74,7 @@ def initialize():
 
     # Speed of the cycle
     global speed
-    speed = list_configure["speed"]
-
-    #Border width
-    global b_wid
-    b_wid = 1
+    speed = 20
 
     # Border color
     global border_color
@@ -81,12 +84,12 @@ def initialize():
 
     # Dead cell color
     global cell_d_color
-    cell_d_color = list_d[list_configure["color_theme"]]
+    cell_d_color = list_d["Grey - Yellow"]
 
     list_a = {"Grey - Yellow":(255,255,0),"Black - White":(210,10,10),"Black- Red":(245,245,245),"Green - Purple":(40,190,60)}
     # Alive cell color
     global cell_a_color
-    cell_a_color = list_a[list_configure["color_theme"]]
+    cell_a_color = list_a["Grey - Yellow"]
     '''Color Combinations
     1. (255,255,0) - (106,106,106)
     2. (210,10,10) - (0,0,0)
@@ -95,15 +98,6 @@ def initialize():
     5. (40,190,60) - (180,40,190)
 
     '''
-
-    # Text display screen color
-    global t_s_bg
-    t_s_bg = (74, 182, 212)
-
-    # Text color
-    global t_color
-    t_color = (29, 133, 34)
-
     # Boolean that indicates whether to continue life cycle or not
     global cycle_running
     cycle_running = False
@@ -111,16 +105,6 @@ def initialize():
     # Count of life cycles
     global cycle_count
     cycle_count = 0
-
-    global normal_width
-    normal_width = cols*(cell_size+b_wid)
-
-    global normal_height
-    normal_height = rows*(cell_size+b_wid)
-
-    # Configuring screen(setting its size by finding out the space rows and cols need)
-    global screen
-    screen = pygame.display.set_mode([normal_width+extra_space,normal_height])
 
     # Adding clock
     global clock
@@ -165,28 +149,7 @@ def check_neighbours():
                 future_status_list[row][col] = 0
     
     # Returning the updated list
-    return future_status_list#
-    
-
-def display_text():
-    pygame.draw.rect(screen,t_s_bg,[normal_width,0,extra_space,normal_height])
-    speed_text = font.render(str(speed), True, t_color)
-    speedText_rect = speed_text.get_rect()
-    speedText_rect.center = (normal_width+extra_space//2,normal_height//4)
-
-    screen.blit(speed_text,speedText_rect)
-
-    speed_text = font.render(str(speed), True, t_color)
-    speedText_rect = speed_text.get_rect()
-    speedText_rect.center = (normal_width+extra_space//2,normal_height//4)
-
-    screen.blit(speed_text,speedText_rect)
-
-    lifeCount_text = font.render(str(cycle_count), True, t_color)
-    lifeCountText_rect = lifeCount_text.get_rect()
-    lifeCountText_rect.center = (normal_width+extra_space//2,2*normal_height//4)
-
-    screen.blit(lifeCount_text,lifeCountText_rect)
+    return future_status_list
 
 initialize()
 
@@ -225,19 +188,21 @@ while running:
             if event.key == pygame.K_q:
                 pygame.quit()
                 initialize()
+            if event.key == pygame.K_r:
+                cell_status_list = random_list(rows,cols)
+
     # Mouse button events
     if pygame.mouse.get_pressed()[0]:
         # Mouse pointer position
         MouseX,MouseY = pygame.mouse.get_pos()
 
-        if not(MouseX > normal_width):
+        if not(MouseY//cell_size > rows-1) and not(MouseX//cell_size > cols-1):
             # Setting new status of the clicked cell
-            cell_status_list[MouseY//(cell_size+b_wid), MouseX//(cell_size+b_wid)] = 1
-            pygame.display.update()
-    if pygame.mouse.get_pressed()[2]:
+            cell_status_list[MouseY//cell_size, MouseX//cell_size] = 1
+    elif pygame.mouse.get_pressed()[2]:
         MouseX,MouseY = pygame.mouse.get_pos()
-        if not(MouseX > normal_width):
-            cell_status_list[MouseY//(cell_size+b_wid), MouseX//(cell_size+b_wid)] = 0
+        if not(MouseY//cell_size > rows) and not(MouseX//cell_size > cols):
+            cell_status_list[MouseY//cell_size, MouseX//cell_size] = 0
 
     # Setting background color
     screen.fill(border_color)
@@ -246,14 +211,13 @@ while running:
     if cycle_running:
         cycle_count += 1
         cell_status_list = np.array(check_neighbours())
-    
-    display_text()
+
 
 
     # Drawing the rectangles
     for y in range(rows):
         for x in range(cols):
-            pygame.draw.rect(screen,cell_d_color if cell_status_list[y][x] == 0 else cell_a_color,[x*(b_wid+cell_size),y*(b_wid+cell_size),cell_size,cell_size])
+            pygame.draw.rect(screen,cell_d_color if cell_status_list[y][x] == 0 else cell_a_color,[x*cell_size,y*cell_size,cell_size,cell_size])
     
     # Updating(Flipping) the whole screen
     pygame.display.flip()
