@@ -18,7 +18,7 @@ Right Mouse Button: Remove cell from the life canvas
 ##################################################################################################
 """
 
-
+# 45 15 , acutal 37 11
 
 
 import numpy as np
@@ -35,6 +35,32 @@ def random_list(rows,cols):
     for i in range(rows):
         cell_status_list.append([random.getrandbits(1) for i in range(cols)])
     return np.array(cell_status_list)
+
+def draw_line(rows,cols):
+    cell_status_list = np.zeros((rows,cols),np.int8)
+    middle = rows // 2
+    for i in range(cols):
+        cell_status_list[middle][i] = 1
+    return cell_status_list
+
+def draw_glider(rows,cols):
+    cell_status_list = np.zeros((rows,cols),np.int8)
+    middle_row = rows//2
+    middle_column = cols//2
+    cell_status_list[middle_row][middle_column] = 1
+    cell_status_list[middle_row][middle_column-1] = 1
+    cell_status_list[middle_row][middle_column+1] = 1
+    cell_status_list[middle_row-1][middle_column+1] = 1
+    cell_status_list[middle_row-2][middle_column] = 1
+    return cell_status_list
+
+# B3/S23
+
+def rule_compiler(rule):
+    rule_list = rule.split("/")
+    for i in range(0,len(rule_list)):
+        rule_list[i] = "".join(filter(lambda x: x.isdigit(), rule_list[i]))
+    return rule_list
 
 def initialize():
 
@@ -53,8 +79,6 @@ def initialize():
 
     # Extracting the display size
     dis_siz_x , dis_siz_y = screen.get_size()
-    print(dis_siz_x,dis_siz_y)
-
     # Number of rows and columns
     global rows , cols
     rows , cols = dis_siz_y // cell_size, dis_siz_x // cell_size
@@ -126,6 +150,11 @@ def initialize():
     global running
     running = True
 
+    global rule
+    rule = "B3/S23"
+
+    rule = rule_compiler(rule)
+
 # Function to check the neighbors of each cell and update game list
 def check_neighbours():
     # Iterating over each cell and counting the number of neighbors
@@ -133,22 +162,19 @@ def check_neighbours():
         neib_temp = 0
         neib_temp = np.sum(cell_status_list[row-1:row+2 , col-1:col+2]) - cell_status_list[row,col]
     
-        # Checking if the cell is alive or not and updating its status by using the rules
-        # Rules for alive cells 
-        if cell_status_list[row][col] == 1:
-            if neib_temp == 3 or neib_temp == 2:
-                future_status_list[row][col] = 1
+        cell_status = cell_status_list[row][col]
+        for i in range(len(rule[cell_status])):
+            if i != len(rule[cell_status])-1:
+                if neib_temp == int(rule[cell_status][i]):
+                    future_status_list[row][col] = 1
+                    break
+                else:
+                    continue
             else:
-                future_status_list[row][col] = 0
-
-        # Rules for dead cells
-        elif cell_status_list[row][col] == 0:
-            if neib_temp == 3:
-                future_status_list[row][col] = 1
-            else:
-                future_status_list[row][col] = 0
-    
-    # Returning the updated list
+                if neib_temp == int(rule[cell_status][i]):
+                    future_status_list[row][col] = 1
+                else:
+                    future_status_list[row][col] = 0
     return future_status_list
 
 initialize()
@@ -173,6 +199,8 @@ while running:
             # Slowing down the life cycel
             if event.key == pygame.K_DOWN:
                 speed = max(5,speed-1)
+            if event.key == pygame.K_ESCAPE:
+                quit()
             if event.key == pygame.K_1:
                 cell_a_color = (255,255,0)
                 cell_d_color = (106,106,106)
@@ -190,6 +218,14 @@ while running:
                 initialize()
             if event.key == pygame.K_r:
                 cell_status_list = random_list(rows,cols)
+            if event.key == pygame.K_l:
+                cell_status_list = draw_line(rows,cols)
+                cycle_running = False
+                print(cell_status_list)
+            if event.key == pygame.K_g:
+                cell_status_list = draw_glider(rows,cols)
+                cycle_running = False
+            
 
     # Mouse button events
     if pygame.mouse.get_pressed()[0]:
