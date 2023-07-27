@@ -28,6 +28,9 @@ from tkinter import *
 import tkinter.ttk as ttk
 from PIL import ImageTk, Image
 from tkinter_api import configure_window
+import os
+from tkinter import filedialog
+from draw_base import draw
 
 
 def random_list(rows,cols):
@@ -126,6 +129,9 @@ def initialize():
     global cycle_running
     cycle_running = False
 
+    global check_status
+    check_status = None
+
     # Count of life cycles
     global cycle_count
     cycle_count = 0
@@ -152,8 +158,10 @@ def initialize():
 
     global rule
     rule = "B3/S23"
-
     rule = rule_compiler(rule)
+
+    global draw_mode
+    draw_mode = False
 
 # Function to check the neighbors of each cell and update game list
 def check_neighbours():
@@ -188,6 +196,12 @@ while running:
         # Quit event
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            check_status = cycle_running
+            cycle_running = False
+        if event.type == pygame.MOUSEBUTTONUP:
+            cycle_running = check_status
+            check_status = None
         # Event for checking different key press events
         if event.type == pygame.KEYDOWN:
             # Space key event(activates the life cycle)
@@ -214,8 +228,7 @@ while running:
                 cell_a_color = (180,40,190)
                 cell_d_color = (40,190,60)
             if event.key == pygame.K_q:
-                pygame.quit()
-                initialize()
+                cell_status_list = np.zeros((rows,cols),np.int8)
             if event.key == pygame.K_r:
                 cell_status_list = random_list(rows,cols)
             if event.key == pygame.K_l:
@@ -225,6 +238,13 @@ while running:
             if event.key == pygame.K_g:
                 cell_status_list = draw_glider(rows,cols)
                 cycle_running = False
+            if event.key == pygame.K_p:
+                pygame.quit()
+                print(os.getcwd())
+                np.save(f"{os.getcwd()}\\temp.npy", cell_status_list)
+                draw()
+                initialize()
+                cell_status_list = np.load(f"{os.getcwd()}\\temp.npy")
             
 
     # Mouse button events
