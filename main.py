@@ -1,10 +1,4 @@
 """
-##################################################################################################
-Author: Siddhartha Kolla
-Date: 26-01-2023
-My GitHub: https://github.com/Siddhartha-Kolla
-##################################################################################################
-
 Controls:
 Up Arrow: Speed Up the life cycle
 Down Arrow: Slow Down the life cycle
