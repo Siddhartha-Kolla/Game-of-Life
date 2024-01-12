@@ -104,7 +104,8 @@ def initialize():
     cell_size = 10
 
     # Extracting the display size
-    dis_siz_x , dis_siz_y = screen.get_size()
+    dis_siz_x , dis_siz_y = (700,500)
+    print(screen.get_size())
     # Number of rows and columns
     global rows , cols
     rows , cols = dis_siz_y // cell_size, dis_siz_x // cell_size
